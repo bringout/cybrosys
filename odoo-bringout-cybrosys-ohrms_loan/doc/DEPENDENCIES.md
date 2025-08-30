@@ -3,5 +3,5 @@
 This addon depends on:
 
 - base
-- [hr](../../../../../oca-ocb-hr/odoo-bringout-oca-ocb-hr)
-- [payroll](../../../../../oca-payroll/odoo-bringout-oca-payroll-payroll)
+- [hr](https://github.com/bringout/oca-ocb-hr)
+- [payroll](https://github.com/bringout/oca-payroll)
