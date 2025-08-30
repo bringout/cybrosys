@@ -2,5 +2,5 @@
 
 This addon depends on:
 
-- [stock](https://github.com/bringout/oca-ocb-warehouse/tree/3e067eb100be2ddf743af8f74cbee58df4eb6bb0/odoo-bringout-oca-ocb-stock)
-- [stock_account](https://github.com/bringout/oca-ocb-accounting/tree/eb3c9b9e76fbb706c132f3bf6a9538d6d5a0b1a7/odoo-bringout-oca-ocb-stock_account)
+- [stock](https://github.com/bringout/oca-ocb-warehouse/tree/62a8c36c9372364b7b073231c40d68a45f49dd78/odoo-bringout-oca-ocb-stock)
+- [stock_account](https://github.com/bringout/oca-ocb-accounting/tree/150f2ecdb69d7dcf1345d7fd66832f9d87a21860/odoo-bringout-oca-ocb-stock_account)
