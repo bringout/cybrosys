@@ -2,5 +2,5 @@
 
 This addon depends on:
 
-- [product_brand_sale](https://github.com/bringout/cybrosys/tree/bab09c84df04878132f654f470cbd8657317bbb4/odoo-bringout-cybrosys-product_brand_sale)
-- [website_sale](https://github.com/bringout/oca-ocb-sale/tree/3e269fa48ad4d81d3305977a3a962b1dc0f75ef3/odoo-bringout-oca-ocb-website_sale)
+- [product_brand_sale](https://github.com/bringout/cybrosys/tree/a141ef6a8973e50a71400d74ff4fa9ed2dc63eb7/odoo-bringout-cybrosys-product_brand_sale)
+- [website_sale](https://github.com/bringout/oca-ocb-sale/tree/b79cef0fc454482466e93989011360a14a738822/odoo-bringout-oca-ocb-website_sale)
