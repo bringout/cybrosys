@@ -53,9 +53,9 @@ class HrLoan(models.Model):
                                                                                                              "the "
                                                                                                              "paymemt")
     loan_lines = fields.One2many('hr.loan.line', 'loan_id', string="Loan Line", index=True)
+    # v19: Field.states removed; draft-editability handled in the view.
     company_id = fields.Many2one('res.company', 'Company', readonly=True, help="Company",
-                                 default=lambda self: self.env.user.company_id,
-                                 states={'draft': [('readonly', False)]})
+                                 default=lambda self: self.env.user.company_id)
     currency_id = fields.Many2one('res.currency', string='Currency', required=True, help="Currency",
                                   default=lambda self: self.env.user.company_id.currency_id)
     job_position = fields.Many2one('hr.job', related="employee_id.job_id", readonly=True, string="Job Position",
@@ -73,23 +73,19 @@ class HrLoan(models.Model):
         ('approve', 'Approved'),
         ('refuse', 'Refused'),
         ('cancel', 'Canceled'),
-    ], string="State", default='draft', track_visibility='onchange', copy=False, )
+    ], string="State", default='draft', tracking=True, copy=False, )
 
-    @api.model
-    def create(self, values):
-        loan_count = self.env['hr.loan'].search_count(
-            [('employee_id', '=', values['employee_id']), ('state', '=', 'approve'),
-             ('balance_amount', '!=', 0)])
-        if loan_count:
-            raise ValidationError(_("The employee has already a pending installment"))
-        else:
-            #values['name'] = self.env['ir.sequence'].get('hr.loan.seq') or ' '
-            #number = payslip.number or self.env["ir.sequence"].next_by_code(
-            #    "salary.slip"
-            #)
+    # v19: ORM expects batch create (model_create_multi).
+    @api.model_create_multi
+    def create(self, vals_list):
+        for values in vals_list:
+            loan_count = self.env['hr.loan'].search_count(
+                [('employee_id', '=', values['employee_id']), ('state', '=', 'approve'),
+                 ('balance_amount', '!=', 0)])
+            if loan_count:
+                raise ValidationError(_("The employee has already a pending installment"))
             values['name'] = False
-            res = super(HrLoan, self).create(values)
-            return res
+        return super(HrLoan, self).create(vals_list)
 
     def compute_installment(self):
         """This automatically create the installment the employee need to pay to
