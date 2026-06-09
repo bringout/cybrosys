@@ -7,7 +7,8 @@
                    position="before">
                 <th name="th_sequence" class="text-start">#</th>
             </xpath>
-            <xpath expr="//tbody[hasclass('sale_tbody')]//tr//td[@name='td_name']"
+            <!-- v19: the product description cell is td_product_name (was td_name) -->
+            <xpath expr="//tbody[hasclass('sale_tbody')]//tr//td[@name='td_product_name']"
                    position="before">
                 <td name="td_sequence">
                     <span t-esc="line.sequence_number"/>
