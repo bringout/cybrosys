@@ -40,9 +40,10 @@ class HrPayrollInputAdd(models.Model):
     payment_date = fields.Date(string="Payment Start Date", required=True, default=fields.Date.today(), help="Date of "
                                                                                                              "the "
                                                                                                              "paymemt")
+    # v19: Field.states removed; editability in draft is handled in the view
+    # (readonly="state != 'draft'").
     company_id = fields.Many2one('res.company', 'Company', readonly=True, help="Company",
-                                 default=lambda self: self.env.user.company_id,
-                                 states={'draft': [('readonly', False)]})
+                                 default=lambda self: self.env.user.company_id)
     currency_id = fields.Many2one('res.currency', string='Currency', required=True, help="Currency",
                                   default=lambda self: self.env.user.company_id.currency_id)
     job_position = fields.Many2one('hr.job', related="employee_id.job_id", readonly=True, string="Job Position",
@@ -55,23 +56,17 @@ class HrPayrollInputAdd(models.Model):
         ('approve', 'Approved'),
         ('refuse', 'Refused'),
         ('cancel', 'Canceled'),
-    ], string="State", default='draft', track_visibility='onchange', copy=False, )
+    ], string="State", default='draft', tracking=True, copy=False, )
 
     payslip_id = fields.Many2one('hr.payslip', string="Payslip Ref.", help="Payslip")
 
-    @api.model
-    def create(self, values):
-        #add_count = self.env['hr.payroll.input.add'].search_count(
-        #    [('employee_id', '=', values['employee_id']), ('state', '=', 'approve')])
-        #if add_count:
-        #    raise ValidationError(_("The employee has already a pending installment"))
-        #else:
-        values['name'] = self.env['ir.sequence'].get('hr.payroll.input.add.seq') or ' '
-        #number = payslip.number or self.env["ir.sequence"].next_by_code(
-        #    "salary.slip"
-        #)
-        res = super(HrPayrollInputAdd, self).create(values)
-        return res
+    # v19: ORM expects batch create (model_create_multi); single @api.model
+    # create is rejected. ir.sequence.get() was removed long ago -> next_by_code.
+    @api.model_create_multi
+    def create(self, vals_list):
+        for values in vals_list:
+            values['name'] = self.env['ir.sequence'].next_by_code('hr.payroll.input.add.seq') or ' '
+        return super(HrPayrollInputAdd, self).create(vals_list)
 
  
     def action_move_to_status_draft(self):

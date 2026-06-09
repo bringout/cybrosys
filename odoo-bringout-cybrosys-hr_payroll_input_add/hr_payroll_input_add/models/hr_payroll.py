@@ -59,7 +59,8 @@ class HrPayslip(models.Model):
         """This Compute the other inputs to employee payslip.
                            """
         res = super(HrPayslip, self).get_inputs(contract_ids, date_from, date_to)
-        contract_obj = self.env['hr.contract']
+        # v19: hr.contract model merged into hr.version
+        contract_obj = self.env['hr.version']
 
         contract_for_add = None
         for contract in contract_ids:

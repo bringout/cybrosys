@@ -21,7 +21,7 @@
 ###################################################################################
 {
     'name': 'Payroll input add STIMUL',
-    'version': '16.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Manage Payroll ADD Requests',
     'description': """
         Helps you to manage add salary requests.
