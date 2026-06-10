@@ -32,11 +32,16 @@ class StockMove(models.Model):
 
     sequence_number = fields.Integer(string='#', compute='_compute_sequence_number', help='Line Numbers')
 
-    @api.depends('picking_id')
+    @api.depends('picking_id', 'picking_id.move_ids_without_package')
     def _compute_sequence_number(self):
         """Function to compute line numbers"""
-        for ids in self.mapped('picking_id'):
+        # v19 raises "Compute method failed to assign" if any record in self is
+        # left unassigned. Moves with no picking (or not in the picking's
+        # move_ids_without_package) were never touched by the loop below, so
+        # default every record first, then number those that belong to pickings.
+        self.sequence_number = 0
+        for picking in self.mapped('picking_id'):
             sequence_number = 1
-            for lines in ids.move_ids_without_package:
+            for lines in picking.move_ids_without_package:
                 lines.sequence_number = sequence_number
                 sequence_number += 1

@@ -32,9 +32,12 @@ class SaleOrderLine(models.Model):
 
     sequence_number = fields.Integer(string='#', compute='_compute_sequence_number', help='Line Numbers')
 
-    @api.depends('sequence', 'order_id')
+    @api.depends('sequence', 'order_id', 'order_id.order_line')
     def _compute_sequence_number(self):
         """Function to compute line numbers"""
+        # v19 requires every record in self to be assigned; a line with no
+        # order_id would be left untouched -> "failed to assign". Default first.
+        self.sequence_number = 0
         for order in self.mapped('order_id'):
             sequence_number = 1
             for lines in order.order_line:
