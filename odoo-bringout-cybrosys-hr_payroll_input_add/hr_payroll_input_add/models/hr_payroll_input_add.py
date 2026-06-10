@@ -105,6 +105,10 @@ class HrEmployee(models.Model):
     def _compute_employee_payroll_adds(self):
         """This compute total payroll adds count of an employee.
             """
-        self.payroll_add_count = self.env['hr.payroll.input.add'].search_count([('employee_id', '=', self.id)])
+        # Must loop: self.id raises "Expected singleton" on a multi-record read
+        # (v19 reads a computed field for the whole recordset at once).
+        Add = self.env['hr.payroll.input.add']
+        for employee in self:
+            employee.payroll_add_count = Add.search_count([('employee_id', '=', employee.id)])
 
     payroll_add_count = fields.Integer(string="Payroll adds", compute='_compute_employee_payroll_adds')
