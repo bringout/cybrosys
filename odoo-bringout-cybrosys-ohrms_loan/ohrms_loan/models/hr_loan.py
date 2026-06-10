@@ -147,6 +147,10 @@ class HrEmployee(models.Model):
     def _compute_employee_loans(self):
         """This compute the loan amount and total loans count of an employee.
             """
-        self.loan_count = self.env['hr.loan'].search_count([('employee_id', '=', self.id)])
+        # Must loop: self.id raises "Expected singleton" on a multi-record read
+        # (v19 reads a computed field for the whole recordset at once).
+        Loan = self.env['hr.loan']
+        for employee in self:
+            employee.loan_count = Loan.search_count([('employee_id', '=', employee.id)])
 
     loan_count = fields.Integer(string="Loan Count", compute='_compute_employee_loans')
